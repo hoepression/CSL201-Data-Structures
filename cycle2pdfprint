@@ -1,0 +1,1004 @@
+EXPERIMENT 7
+                                  STACK AND QUEUE USING LINKED LIST 
+
+ASHWIN ISSAC
+S3DS
+09
+16/11/2022
+AIMCODE
+#include<stdio.h>
+#include<stdlib.h>
+#include<limits.h>
+struct polytype
+{
+int coef;
+int exp;
+struct polytype *next;
+};
+typedef struct polytype poly;
+poly*maketerm(int co,int ex)
+{
+poly*term;
+term=(poly*)malloc(sizeof(poly));
+term->coef=co;
+term->exp=ex;
+term->next=NULL;
+return term;
+}
+poly*insertterm(int co,int ex,poly*tail)
+{
+poly*temp;
+temp=maketerm(co,ex);
+temp->next=tail->next;
+tail->next=temp;
+return temp;
+}
+poly *polyprod(poly *a,poly *b)
+{
+poly *result, *tail, *ap,*bp;
+int texp,tcoef;
+result=tail=maketerm(0,INT_MAX);
+for(ap=a;ap!=NULL;ap=ap->next)
+for(bp=b;bp!=NULL;bp=bp->next){
+tcoef=ap->coef*bp->coef;
+texp=ap->exp+bp->exp;
+tail=result;
+while(tail->next!=NULL&&tail->exp>texp)
+{
+if((tail->next)->exp>=texp)
+tail=tail->next;
+else 
+break;
+}
+if(tail->exp==texp)
+tail->coef+=tcoef;
+else if (tail->exp>texp)
+tail=insertterm(tcoef,texp,tail);
+}
+tail=result;
+result=result->next;
+free(tail);
+return result;
+}
+
+poly *readpoly(int m)
+{
+poly *x,*a;
+x=a=maketerm(0,INT_MAX);
+for(int i=0;i<m;i++)
+{
+int co,ex;
+scanf("%d%d",&co,&ex);
+x=insertterm(co,ex,x);
+}
+x=a;
+a=a->next;
+free(x);
+return a;
+}
+void display(poly *a)
+{
+poly*x=a;
+printf("\n");
+while(x!=NULL)
+{
+if(x->coef!=NULL){
+printf("(%dx^%d)",x->coef,x->exp);
+if(x->next!=NULL)
+printf("+");}
+x=x->next;
+}}/*
+void sort (poly*a,int m)
+{
+for (int i=0;i,m;i++)
+{
+poly *x=a;
+while((x->next)!=NULL)
+{
+if(x->exp<(x->next)->exp)
+{
+int temp=x->exp;
+x->exp=(x->next)->exp;
+(x->next)->coef=temp;
+}
+x=x->next;
+}}}*/
+int main()
+{
+int m,n;
+printf("Enter no.of terms of first polynomial\n");
+scanf("%d",&m);
+printf("Enter  coefficient and exponent of each term\n");
+poly*a=readpoly(m);
+printf("Enter no.of terms of second polynomial\n");
+scanf("%d",&n);
+printf("Enter  coefficient and exponent of each term\n");
+poly*b=readpoly(n);
+printf("\nFirst Polynomial\n");
+display(a);
+printf("\nSecond Polynomial\n");
+display(b);
+poly*result=polyprod(a,b);
+printf("\nProduct of Polynomial\n");
+display(result);
+}
+
+
+            Write a menu driven program to implement stack and simple queue with the following operations using linked lists:
+
+a. Push elements to the stack.
+b. Pop elements from the stack.
+c. Display the stack after each operation
+
+CODE
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+struct Node
+{
+    int data;
+    struct Node *next;
+};
+
+struct Node *top = NULL;
+struct Node *front = NULL, *rear = NULL;
+
+bool stack_empty()
+{
+    return top == NULL;
+}
+void stack_push(int data)
+{
+    struct Node *newNode = (struct Node *)malloc(sizeof(struct Node));
+    newNode->data = data;
+    newNode->next = NULL;
+    if (top)
+        newNode->next = top;
+    top = newNode;
+}
+
+int stack_pop()
+{
+    if (stack_empty())
+        return -1;
+    int del = top->data;
+    struct Node *temp = top;
+    top = top->next;
+    free(temp);
+
+    return del;
+}
+
+
+void display()
+{
+    if (stack_empty())
+        return;
+    for (struct Node *ptr = top; ptr; ptr = ptr->next)
+        printf("%d ", ptr->data);
+}
+
+bool qEmpty()
+{
+    return front == NULL && rear == NULL;
+}
+
+
+
+void enQueue(int data)
+{
+    struct Node *newNode = (struct Node *)malloc(sizeof(struct Node));
+    newNode->data = data;
+    newNode->next = NULL;
+    if (rear == NULL)
+        front = newNode;
+    else
+        rear->next = newNode;
+    rear = newNode;
+}
+
+int deQueue()
+{
+    if (qEmpty())
+        return -1;
+
+    int deleted = front->data;
+    struct Node *temp = front;
+    if (front == rear)
+        front = rear = NULL;
+    else
+        front = front->next;
+
+    free(temp);
+    return deleted;
+}
+
+
+
+void qdisplay()
+{
+    if (qEmpty())
+    {
+        printf("Empty\n");
+        return;
+    }
+    for (struct Node *curr = front; curr; curr = curr->next)
+        printf("%d ", curr->data);
+}
+
+
+void main()
+{
+int ch1, x=0;
+while(x==0)
+{
+printf("1. Linked stack\n2. Linked queue\n3. Exit\n");
+printf("Enter a choice:\n");
+scanf("%i"
+, &ch1);
+if(ch1==1)
+{
+int s=0, ch2;
+while(s==0)
+{
+printf("\n1. Push\n2. Pop\n3. Display\n4. Exit\n");
+printf("Enter a choice:\n");
+scanf("%i"
+, &ch2);
+if(ch2==1)
+{
+int element;
+printf("Enter an element:\n");
+scanf("%i", &element);
+stack_push(element);
+}
+else if(ch2==2)
+{
+printf("The element deleted is: %i\n", stack_pop());
+}
+else if(ch2==3)
+{
+display();
+}
+else
+{
+s++;
+}
+}
+}
+else if(ch1==2)
+{
+int q=0, ch2;
+while(q==0)
+{
+printf("\n1. Push\n2. Pop\n3. Display\n4. Exit\n");
+printf("Enter a choice:\n");
+scanf("%i", &ch2);
+if(ch2==1)
+{
+int element;
+printf("Enter an element:\n");
+scanf("%i", &element);
+enQueue(element);
+}
+else if(ch2==2)
+{
+deQueue();
+}
+else if(ch2==3)
+{
+qdisplay();
+}
+else
+{
+q++;
+}
+}
+}
+else
+{
+printf("Exiting the program\n");
+x++;
+}
+}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+EXPERIMENT 8
+                                  POLYNOMIAL MULTIPLICATION
+
+ASHWIN ISSAC
+S3DS
+9
+16/11/2022
+AIM
+          Write a menu driven program to read two polynomials and store them in linked lists. Multiply the two polynomials and store the result using linked list. Display the first polynomial, second polynomial and the resultant polynomial.
+
+CODE
+#include<stdio.h>
+#include<stdlib.h>
+#include<limits.h>
+struct polytype
+{
+int coef;
+int exp;
+struct polytype *next;
+};
+typedef struct polytype poly;
+poly*maketerm(int co,int ex)
+{
+poly*term;
+term=(poly*)malloc(sizeof(poly));
+term->coef=co;
+term->exp=ex;
+term->next=NULL;
+return term;
+}
+poly*insertterm(int co,int ex,poly*tail)
+{
+poly*temp;
+temp=maketerm(co,ex);
+temp->next=tail->next;
+tail->next=temp;
+return temp;
+}
+poly *polyprod(poly *a,poly *b)
+{
+poly *result, *tail, *ap,*bp;
+int texp,tcoef;
+result=tail=maketerm(0,INT_MAX);
+for(ap=a;ap!=NULL;ap=ap->next)
+for(bp=b;bp!=NULL;bp=bp->next){
+tcoef=ap->coef*bp->coef;
+texp=ap->exp+bp->exp;
+tail=result;
+while(tail->next!=NULL&&tail->exp>texp)
+{
+if((tail->next)->exp>=texp)
+tail=tail->next;
+else 
+break;
+}
+if(tail->exp==texp)
+tail->coef+=tcoef;
+else if (tail->exp>texp)
+tail=insertterm(tcoef,texp,tail);
+}
+tail=result;
+result=result->next;
+free(tail);
+return result;
+}
+
+poly *readpoly(int m)
+{
+poly *x,*a;
+x=a=maketerm(0,INT_MAX);
+for(int i=0;i<m;i++)
+{
+int co,ex;
+scanf("%d%d",&co,&ex);
+x=insertterm(co,ex,x);
+}
+x=a;
+a=a->next;
+free(x);
+return a;
+}
+void display(poly *a)
+{
+poly*x=a;
+printf("\n");
+while(x!=NULL)
+{
+if(x->coef!=NULL){
+printf("(%dx^%d)",x->coef,x->exp);
+if(x->next!=NULL)
+printf("+");}
+x=x->next;
+}}/*
+void sort (poly*a,int m)
+{
+for (int i=0;i,m;i++)
+{
+poly *x=a;
+while((x->next)!=NULL)
+{
+if(x->exp<(x->next)->exp)
+{
+int temp=x->exp;
+x->exp=(x->next)->exp;
+(x->next)->coef=temp;
+}
+x=x->next;
+}}}*/
+int main()
+{
+int m,n;
+printf("Enter no.of terms of first polynomial\n");
+scanf("%d",&m);
+printf("Enter  coefficient and exponent of each term\n");
+poly*a=readpoly(m);
+printf("Enter no.of terms of second polynomial\n");
+scanf("%d",&n);
+printf("Enter  coefficient and exponent of each term\n");
+poly*b=readpoly(n);
+printf("\nFirst Polynomial\n");
+display(a);
+printf("\nSecond Polynomial\n");
+display(b);
+poly*result=polyprod(a,b);
+printf("\nProduct of Polynomial\n");
+display(result);
+}
+
+
+
+
+
+
+EXPERIMENT 9
+                                  BINARY TREE
+
+ASHWIN ISSAC
+S3DS
+9
+16/11/2022
+AIM
+        For a given arithmetic expression, create a binary tree with the following operations:
+a. Inorder traversal.
+b. Preorder traversal.
+c. Postorder traversal.
+
+CODE
+#include<stdio.h>
+#include<stdlib.h>
+struct node
+{
+char data;
+struct node* left;
+struct node* right;
+};
+struct node* newNode(char data)
+{
+struct node* node=(struct node*)malloc(sizeof(struct node));
+node->data=data;
+node->left=NULL;
+node->right=NULL;
+return(node);
+}
+void inorder(struct node* node)
+{
+if(node==NULL)
+return;
+inorder(node->left);
+printf("%c ",node->data);
+inorder(node->right);
+}
+void preorder(struct node* node)
+{
+if(node==NULL)
+return;
+printf("%c ",node->data);
+preorder(node->left);
+preorder(node->right);
+}
+void postorder(struct node* node)
+{
+if(node==NULL)
+return;
+postorder(node->left);
+postorder(node->right);
+printf("%c ",node->data);
+}
+int main()
+{
+struct node* root = newNode('+');
+root->left=newNode('*');
+root->right=newNode('-');
+root->left->left=newNode('/');
+root->right->left=newNode('D');
+root->left->right=newNode('C');
+root->right->right=newNode('E');
+root->left->left->left=newNode('A');
+root->left->left->right=newNode('B');
+int x=1,c;
+while(x!=0)
+{
+printf("The available options are:\n");
+printf("1)Inorder\n2)Preorder\n3)Postorder\n4)Exit\n");
+printf("Enter your choice : ");
+scanf("%d",&c);
+switch(c)
+{
+case 1:
+printf("\nInorder expression is : ");
+inorder(root);
+printf("\n");
+break;
+case 2:
+printf("\nPreorder expression is : ");
+preorder(root);
+printf("\n");
+break;
+case 3:
+printf("\nPostorder expression is : ");
+postorder(root);
+printf("\n");
+break;
+case 4:
+printf("Exiting");
+x=0;
+default:
+printf("Enter a valid choice\n");
+break;
+}
+}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+EXPERIMENT 10
+                                 GRAPH
+
+ASHWIN ISSAC
+S3DS
+09
+16/11/2022
+AIM
+  Write a menu driven program to perform DFS and BFS on a graph.
+
+CODE
+#include <stdio.h>
+#include<stdlib.h>
+int visit[20]={0}, v[20]={0}, i, j;
+typedef struct node{
+    int data;
+    struct node *prev, *link;
+}node;
+typedef struct queue{
+    struct node *rr, *fr;
+}que;
+int dequeue(que *q){
+    if(q->rr!=NULL){
+        node *temp=q->rr;
+        int d=temp->data;
+        q->rr=temp->prev;
+    if(q->rr!=NULL)
+        q->rr->link=NULL;
+    else
+        q->fr=NULL;
+    return d;
+    }
+  return 0;
+}
+void enqueue(int ch, que *q ){
+    node *x=(node*)malloc(sizeof(node));
+    x->data=ch;
+    x->link=NULL;
+    x->prev=NULL;
+    if(q->fr==NULL){
+        q->fr=x;
+        q->rr=x;
+    }
+    else{
+        x->link=q->fr;
+        q->fr->prev=x;
+        q->fr=x;
+    }
+}
+void dfs(int t, int a[20][20],int n){
+    printf("%d  ",t);
+    visit[t-1]=1;
+    for(i=0;i<n;i++){
+        if(a[t-1][i]==1 && visit[i]==0)
+            dfs(i+1,a,n);
+    }
+}
+void bfs(int t, int a[20][20],int n, que *q){
+    printf("%d  ",t);
+    enqueue(t,q);
+    v[t-1]=1;
+    while(q->fr!=NULL){
+        int temp=dequeue(q);
+        for(i=0;i<n;i++){
+            if(a[temp-1][i]==1 && v[i]==0){
+            enqueue(i+1,q);
+            printf("%d  ",i+1);
+            v[i]=1;
+    }}}
+}
+void main() {
+    int n, e, p, q, t, d, a[20][20];
+    que q1;
+    q1.fr=q1.rr=NULL;
+    printf("Enter number of vertices: ");
+    scanf("%d",&n);
+    for(i=0;i<n;i++){   
+        visit[i]=0;
+        for(j=0;j<n;j++)
+            a[i][j]=0;
+    }
+    printf("Enter number of edges: ");
+    scanf("%d",&e);
+    printf("Enter 1 for undirected graph and 0 for directed graph: ");
+    scanf("%d",&t);
+    printf("Enter edge vertices(p,q) of \n");
+    for(i=0;i<e;i++){
+        printf("edge %d: ", i+1);
+        scanf("%d%d",&p,&q);
+        a[p-1][q-1]=1;
+        if(t==1)
+            a[q-1][p-1]=1;
+    }
+    printf("Adjacency Matrix = \n");
+    for(i=0;i<n;i++){
+        for(j=0;j<n;j++)
+            printf("%d ",a[i][j]);
+        printf("\n");
+    }
+    printf("Enter element from where you want to start dfs and bfs: ");
+    scanf("%d",&d);
+    printf("DFS:\n");
+    dfs(d,a,n);
+    printf("\nBFS:\n");
+    bfs(d,a,n,&q1);
+    printf("\n");
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+EXPERIMENT 11
+                                   SORTING 
+
+ASHWIN ISSAC
+S3DS
+09
+16/11/2022
+AIM
+Write a menu driven program to perform Quick sort, Merge sort and Heap sort on array.
+
+CODE
+#include<stdio.h>
+#include<stdlib.h>
+void quick_sort(int a[100],int l,int u)
+{
+int j;
+if(l<u)
+{
+j=partition(a,l,u);
+quick_sort(a,l,j-1);
+quick_sort(a,j+1,u);
+}
+}
+int partition(int a[100],int l,int u)
+{
+int v,i,j,temp;
+v=a[l];
+i=l;
+j=u+1;
+do
+{
+do
+{
+i++;
+}while(a[i]<v&&i<=u);
+do
+{
+j--;
+}while(a[j]>v);
+if(i<j)
+{
+temp=a[i];
+a[i]=a[j];
+a[j]=temp;
+}
+}while(i<j);
+a[l]=a[j];
+a[j]=v;
+return(j);
+}
+
+void mergesort(int a[100],int i, int j)
+{
+int mid;
+if(i<j)
+{
+mid=(i+j)/2;
+mergesort(a,i,mid);
+mergesort(a,mid+1,j);
+merge(a,i,mid,mid+1,j);
+}
+}
+void merge(int a[100],int i1,int j1, int i2,int j2)
+{
+int temp[100];
+int i,j,k;
+i=i1;
+j=i2;
+k=0;
+while(i<=j1&&j<=j2)
+{
+if(a[i]<a[j])
+temp[k++]=a[i++];
+else
+temp[k++]=a[j++];
+}
+while(i<=j1)
+temp[k++]=a[i++];
+while(j<=j2)
+temp[k++]=a[j++];
+for(i=i1,j=0;i<=j2;i++,j++)
+a[i]=temp[j];
+}
+void heap_sort()
+{
+int heap[30],n,i,last,temp;
+printf("Enter no of elements\n");
+scanf("%d",&n);
+for(i=0;i<=n-1;i++)
+{
+printf("Enter the no\n");
+scanf("%d",&heap[i]);
+}
+heap[0]=n;
+create(heap);
+while(heap[0]>1)
+{
+last=heap[0];
+temp=heap[1];
+heap[1]=heap[last];
+heap[last]=temp;
+heap[0]--;
+down_adjust(heap,1);
+}
+printf("\nSorted Array\n");
+for(i=0;i<=n-1;i++)
+printf("%d\n",heap[i]);
+}
+void create(int heap[100])
+{
+int i,n;
+n=heap[0];
+for(i=n/2;i>=1;i--)
+down_adjust(heap,i);
+}
+void down_adjust(int heap[100],int i)
+{
+int j,temp,n,flag=1;
+n=heap[0];
+while(2*i<=n && flag==1)
+{
+j=2*i;
+if(j+1<=n && heap[j+1]>heap[j])
+j=j+1;
+if(heap[i]>heap[j])
+flag=0;
+else
+{
+temp=heap[i];
+heap[i]=heap[j];
+heap[j]=temp;
+i=j;
+}
+}
+}
+
+void main()
+{
+int a[100],n,i,op;
+while(1)
+{
+printf("\n1.Quick sort\n2.Merge sort\n3.Heap sort\n4.Exit\n");
+scanf("%d",&op);
+switch(op)
+{
+case 1:printf("QUICK SORT\n");
+       printf("Enter no of elements\n");
+       scanf("%d",&n);
+       printf("Enter the nos\n");
+       for(i=0;i<=n-1;i++)
+       scanf("%d",&a[i]);
+       quick_sort(a,0,n-1);
+       printf("Sorted array is\n");
+       for(i=0;i<=n-1;i++)
+       printf("%d\n",a[i]);
+       break;
+case 2:printf("MERGE SORT\n");
+       printf("Enter no of elements\n");
+       scanf("%d",&n);
+       printf("Enter the nos\n");
+       for(i=0;i<=n-1;i++)
+       scanf("%d",&a[i]);
+       mergesort(a,0,n-1);
+       printf("Sorted array is\n");
+       for(i=0;i<=n-1;i++)
+       printf("%d\n",a[i]);
+       break;
+case 3:printf("HEAP SORT\n");
+       heap_sort();
+       break;
+case 4:exit(1);
+default:printf("Invalid Choice\n");
+}
+}
+}
+
+
+
+
+EXPERIMENT 12
+                                   HASH TABLE 
+
+ASHWIN ISSAC
+S3DS
+09
+16/11/2022
+AIM
+Write a program to implement a hash table using chaining method. Let the size of the hash table be 10 so that the indices vary from 0 to 9. Use division as the hash function.
+
+CODE
+#include<stdio.h>
+#include<stdlib.h>
+struct node {
+    int data;
+    struct node *next;
+} *hashtable[10];
+
+
+void initialize(){
+    int i;
+    for(i=0; i<10; i++){
+        hashtable[i] = NULL;
+    }
+}
+
+void insert(int value){
+    int key = value % 10;
+    struct node *newnode = (struct node *)malloc(sizeof(struct node));
+    printf("inserting");
+    newnode->data = value;
+    newnode->next = NULL;
+    if(hashtable[key] == NULL){
+        hashtable[key] = newnode;
+    }
+    else if(hashtable[key]->data > value){
+        newnode->next = hashtable[key];
+        hashtable[key] = newnode;
+    }
+    else{
+        struct node *temp = hashtable[key];
+        while(temp->next != NULL && temp->next->data < value){
+            temp = temp->next;
+        }
+        newnode->next = temp->next;
+        temp->next = newnode;
+    }
+    
+}
+
+void print(){
+    struct node *temp;
+    printf("\n\nHashtable: \n");
+    for(int i=0; i<10; i++){
+        printf("\n[%d] --- ", i);
+        temp = hashtable[i];
+        while(temp != NULL){
+            printf(" %d -->", temp->data);
+            temp = temp->next;
+        }
+        printf("NULL");
+    }
+}
+void main(){
+    initialize();
+    int choice = 0, value;
+    do{
+        printf("\n\n\t\tMENU\n 1. Insert into the hashtable\n 2. Print the hashtable\n 3. Exit\n");
+        printf("\nEnter your choice: ");
+        scanf("%d", &choice);
+        switch(choice) {
+            case 1:
+                printf("\nEnter the value to be inserted: ");
+                scanf("%d", &value);
+                insert(value);
+                break;
+            case 2:
+                print();
+                break;
+            case 3:
+                printf("\nExiting");
+                break;
+            default:
+                printf("\nInvalid choice");
+        }
+    } while(choice !=3);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
